@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-
+import { useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useForm } from 'react-hook-form'
@@ -11,14 +11,16 @@ function SignIn() {
   const history = useHistory()
   const dispatch = useDispatch()
   const errorState = useSelector((state) => state.errorState)
+  const logged = useSelector((state) => state.logged)
   const { register, handleSubmit } = useForm({ mode: 'onBlur' })
 
   const onSubmit = (data) => {
     dispatch(signIn(data.email, data.password))
-    if (errorState === '') {
-      history.push('/')
-    }
   }
+
+  useEffect(() => {
+    logged ? history.push('/') : null
+  }, [logged])
 
   return (
     <div className={classes.block__form}>

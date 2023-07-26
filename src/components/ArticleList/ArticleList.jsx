@@ -45,13 +45,10 @@ function ArticleList() {
     setCurrentPage(page)
   }
 
-  const showLoading = loading ? <Spin size="large" className={classes.spin} /> : null
-  const showError = articleError ? 'Error' : null
-
   return (
     <div className={classes.article__list}>
-      {showLoading}
-      {showError}
+      {loading ? <Spin size="large" className={classes.spin} /> : null}
+      {articleError ? 'Error' : null}
       {articles?.map((el) => (
         <Article key={el.slug} data={el} />
       ))}

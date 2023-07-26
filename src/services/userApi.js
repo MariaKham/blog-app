@@ -1,5 +1,6 @@
 import { setUser, setLogged, setErrorState } from '../store/actions/loginAction'
 
+// регистрация
 export function signUp(data) {
   const value = {
     username: data.username,
@@ -9,7 +10,9 @@ export function signUp(data) {
   return (dispatch) => {
     fetch('https://blog.kata.academy/api/users', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({ user: value }),
     })
       .then((res) => res.json())
@@ -21,13 +24,14 @@ export function signUp(data) {
           const value = `${Object.entries(body.errors)
             .map((err) => `${err[0].toString()},`)
             .join(' ')
-            .slice(0, -2)} is already taken` /* разобраться с ошибкой, не нравится что она есть */
+            .slice(0, -2)} is already taken`
           dispatch(setErrorState(value))
         }
       })
   }
 }
 
+// вход по логину
 export function signIn(email, password) {
   return (dispatch) => {
     fetch('https://blog.kata.academy/api/users/login', {
@@ -61,6 +65,7 @@ export function signIn(email, password) {
   }
 }
 
+// проверка на то, залогинен ли пользователь
 export const checkAuth = () => async (dispatch) => {
   try {
     const token = localStorage.getItem('token')
@@ -82,6 +87,7 @@ export const checkAuth = () => async (dispatch) => {
   }
 }
 
+// обновление данных в профиле
 export function updateUser(data) {
   const token = localStorage.getItem('token')
   return (dispatch) => {
@@ -107,6 +113,7 @@ export function updateUser(data) {
   }
 }
 
+// удаление токена
 export const logOut = () => async (dispatch) => {
   try {
     localStorage.removeItem('token')

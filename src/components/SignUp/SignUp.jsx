@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useSelector, useDispatch } from 'react-redux'
@@ -11,6 +11,7 @@ import classes from '../App/app.module.scss'
 function SignUp() {
   const [checkbox, setCheckbox] = useState(true)
   const errorState = useSelector((state) => state.errorState)
+  const logged = useSelector((state) => state.logged)
   const dispatch = useDispatch()
   const history = useHistory()
 
@@ -23,11 +24,15 @@ function SignUp() {
 
   const onSubmit = (data) => {
     dispatch(signUp(data))
-    if (errorState === '') {
+    if (logged) {
       message.success('Account created')
       history.push('/sign-in')
     }
   }
+
+  useEffect(() => {
+    logged ? history.push('/') : null
+  }, [logged])
 
   return (
     <div className={classes.block__form}>

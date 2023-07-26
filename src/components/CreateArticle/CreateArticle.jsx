@@ -10,14 +10,13 @@ import { getArticle, createNewArticle, editArticle } from '../../services/articl
 import classes from './createArticle.module.scss'
 
 function CreateArticle() {
+  const history = useHistory()
+  const { slug } = useParams()
   const [tag, setTag] = useState([])
   const [inputState, setInputState] = useState('')
   const [error, setError] = useState(false)
 
   const logged = useSelector((state) => state.logged)
-
-  const history = useHistory()
-  const { slug } = useParams()
 
   if (!logged) {
     history.push('/sign-in')
@@ -34,7 +33,6 @@ function CreateArticle() {
   } = useForm({ mode: 'onBlur' })
 
   const clearState = () => {
-    reset()
     setTag([])
   }
 
@@ -52,19 +50,6 @@ function CreateArticle() {
         .catch(() => setError(true))
     }
   }, [slug])
-
-  const onDeletTag = (id) => {
-    setTag((tag) => tag.filter((el) => el.id !== id))
-    unregister(`tags${id}`)
-  }
-
-  const onAddTag = () => {
-    unregister('tags0')
-    if (inputState.trim()) {
-      setTag([...tag, { value: inputState.trim(), id: nanoid() }])
-      setInputState('')
-    }
-  }
 
   const onSubmit = (data) => {
     const { body, title, description, ...tags } = data
@@ -90,6 +75,19 @@ function CreateArticle() {
           .catch(() => setError(true))
       }
     }
+  }
+
+  const onAddTag = () => {
+    unregister('tags0')
+    if (inputState.trim()) {
+      setTag([...tag, { value: inputState.trim(), id: nanoid() }])
+      setInputState('')
+    }
+  }
+
+  const onDeletTag = (id) => {
+    setTag((tag) => tag.filter((el) => el.id !== id))
+    unregister(`tags${id}`)
   }
 
   return (
@@ -174,12 +172,26 @@ function CreateArticle() {
             >
               Delete
             </button>
-            <button type="button" className={classes.btn_add} onClick={() => onAddTag()}>
+            <button
+              type="button"
+              className={classes.btn_add}
+              onClick={() => {
+                onAddTag()
+              }}
+            >
               Add tag
             </button>
           </div>
         </div>
-        <input type="submit" name="submit" id="submit" value="Send" />
+        <input
+          type="submit"
+          name="submit"
+          id="submit"
+          value="Send"
+          onClick={() => {
+            reset({ tags0: '' })
+          }}
+        />
       </form>
     </div>
   )

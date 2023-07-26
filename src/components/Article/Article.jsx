@@ -3,7 +3,6 @@ import { Link, useHistory } from 'react-router-dom'
 import { format } from 'date-fns'
 import { Popconfirm, message } from 'antd'
 import { useSelector } from 'react-redux'
-import { nanoid } from 'nanoid'
 
 import { deleteArticle, setFavorite, deleteFavorite } from '../../services/articleApi'
 import nolike from '../../assets/img/no-like.svg'
@@ -66,17 +65,11 @@ function Article({ data, showmore, checkSlug }) {
           <span>{count}</span>
         </div>
         <div className={classes.tagList}>
-          {data.tagList.map((item) => {
-            if (item.length === 0 || !item.trim()) {
-              return
-            }
-            const id = nanoid()
-            return (
-              <div key={id} className={classes.tag}>
-                {item}
-              </div>
-            )
-          })}
+          {data.tagList.map((item, id) => (
+            <div key={id} className={classes.tag}>
+              {item}
+            </div>
+          ))}
         </div>
         <div className={classes.description}>{data.description}</div>
       </div>
