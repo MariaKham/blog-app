@@ -37,6 +37,12 @@
         "react-hooks"
     ],
     "rules": {
+        "no-plusplus": 0,
+        "no-unused-expressions": 0,
+        "jsx-a11y/no-static-element-interactions": 0,
+        "no-return-await": 0,
+        "no-useless-return": 0,
+        "react/jsx-props-no-spreading": "off",
         "no-shadow": 0,
         "react-hooks/exhaustive-deps": 0,
         "react/no-array-index-key": 0,

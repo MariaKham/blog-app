@@ -1,0 +1,25 @@
+// .article-list {
+//     display: flex;
+//     flex-direction: column;
+//     gap: 25px;
+//   }
+
+  .article__list {
+    display: flex;
+    flex-direction: column;
+    padding: 25px 0px;
+    gap: 35px;
+    width: auto;
+    margin: 0 auto;
+  }
+  
+  .spin {
+    margin: 30px auto;
+    width: auto;
+  }
+  
+  .pagination {
+    width: 100%;
+    text-align: center;
+    margin: 20px auto;
+  }
