@@ -11,12 +11,14 @@ import like from '../../assets/img/like.svg'
 import classes from './article.module.scss'
 
 function Article({ data, showmore, checkSlug }) {
-  const history = useHistory()
   const user = useSelector((state) => state.user)
   const logged = useSelector((state) => state.logged)
+
   const [error, setError] = useState(false)
   const [active, setActive] = useState(data.favorited)
   const [count, setCount] = useState(data.favoritesCount)
+
+  const history = useHistory()
 
   useEffect(() => {
     if (logged) {

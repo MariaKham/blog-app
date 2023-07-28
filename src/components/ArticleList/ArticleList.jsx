@@ -1,28 +1,19 @@
 import { useEffect, useState } from 'react'
-// import { useDispatch } from 'react-redux'
-// import { useSelector } from 'react-redux'
 import { Spin, Pagination } from 'antd'
 
 import { getArticles } from '../../services/articleApi'
-// import { setArticles, setTotalPage, setLoading, setArticleError } from '../../store/actions/articleAction'
 import Article from '../Article/Article'
 
 import classes from './articleList.module.scss'
 
 function ArticleList() {
   const [currentPage, setCurrentPage] = useState(1)
-  // const articles = useSelector((state) => state.articles)
-  // const loading = useSelector((state) => state.loading)
-  // const articleError = useSelector((state) => state.error)
-  // const totalPage = useSelector((state) => state.totalPage)
   const [articles, setArticles] = useState([])
   const [articleError, setArticleError] = useState(false)
   const [totalPage, setTotalPage] = useState()
   const [loading, setLoading] = useState(true)
 
   const token = localStorage.getItem('token')
-
-  // const dispatch = useDispatch()
 
   useEffect(() => {
     getArticles(currentPage)

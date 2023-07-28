@@ -8,6 +8,7 @@ import classes from './header.module.scss'
 function Header() {
   const logged = useSelector((state) => state.logged)
   const user = useSelector((state) => state.user)
+
   const history = useHistory()
   const dispatch = useDispatch()
 
