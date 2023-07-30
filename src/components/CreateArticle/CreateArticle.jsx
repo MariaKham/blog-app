@@ -6,6 +6,7 @@ import { nanoid } from 'nanoid'
 import { message } from 'antd'
 
 import { getArticle, createNewArticle, editArticle } from '../../services/articleApi'
+import { loggedState } from '../../store/selectors'
 
 import classes from './createArticle.module.scss'
 
@@ -16,7 +17,7 @@ function CreateArticle() {
   const [inputState, setInputState] = useState('')
   const [error, setError] = useState(false)
 
-  const logged = useSelector((state) => state.logged)
+  const logged = useSelector(loggedState)
 
   if (!logged) {
     history.push('/sign-in')

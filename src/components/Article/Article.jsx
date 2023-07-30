@@ -7,12 +7,13 @@ import { useSelector } from 'react-redux'
 import { deleteArticle, setFavorite, deleteFavorite } from '../../services/articleApi'
 import nolike from '../../assets/img/no-like.svg'
 import like from '../../assets/img/like.svg'
+import { userData, loggedState } from '../../store/selectors'
 
 import classes from './article.module.scss'
 
 function Article({ data, showmore, checkSlug }) {
-  const user = useSelector((state) => state.user)
-  const logged = useSelector((state) => state.logged)
+  const user = useSelector(userData)
+  const logged = useSelector(loggedState)
 
   const [error, setError] = useState(false)
   const [active, setActive] = useState(data.favorited)

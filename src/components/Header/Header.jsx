@@ -2,12 +2,13 @@ import { Link, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { logOut } from '../../services/userApi'
+import { loggedState, userData } from '../../store/selectors'
 
 import classes from './header.module.scss'
 
 function Header() {
-  const logged = useSelector((state) => state.logged)
-  const user = useSelector((state) => state.user)
+  const logged = useSelector(loggedState)
+  const user = useSelector(userData)
 
   const history = useHistory()
   const dispatch = useDispatch()

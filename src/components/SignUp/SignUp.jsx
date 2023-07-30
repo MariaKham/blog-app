@@ -1,17 +1,17 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { message } from 'antd'
 
+import { setErrorState } from '../../store/actions/loginAction'
 import { signUp } from '../../services/userApi'
 import classes from '../App/app.module.scss'
 
 function SignUp() {
   const [checkbox, setCheckbox] = useState(true)
-  const errorState = useSelector((state) => state.errorState)
-  const logged = useSelector((state) => state.logged)
+  const [validationErr, setValidationErr] = useState(false)
   const dispatch = useDispatch()
   const history = useHistory()
 
@@ -23,16 +23,17 @@ function SignUp() {
   } = useForm({ mode: 'onBlur' })
 
   const onSubmit = (data) => {
-    dispatch(signUp(data))
-    if (logged) {
-      message.success('Account created')
-      history.push('/sign-in')
-    }
+    signUp(data).then((body) => {
+      if (body.user) {
+        dispatch(setErrorState(''))
+        message.success('Account created')
+        history.push('/sign-in')
+      }
+      if (body.errors) {
+        setValidationErr(true)
+      }
+    })
   }
-
-  useEffect(() => {
-    logged ? history.push('/') : null
-  }, [logged])
 
   return (
     <div className={classes.block__form}>
@@ -57,6 +58,7 @@ function SignUp() {
           })}
         />
         {errors?.username && <div className={classes.error}>{errors?.username.message || 'Error'}</div>}
+        {validationErr ? <div className={classes.error}>Username is already taken</div> : null}
 
         <label htmlFor="email">Email address</label>
         <input
@@ -73,6 +75,7 @@ function SignUp() {
           })}
         />
         {errors?.email && <div className={classes.error}>{errors?.email?.message || 'Error'}</div>}
+        {validationErr ? <div className={classes.error}>Email is already taken</div> : null}
 
         <label htmlFor="password">Password</label>
         <input
@@ -127,12 +130,12 @@ function SignUp() {
           I agree to the processing of my personal information
         </label>
         {errors?.check && <div className={classes.error}>{errors?.check?.message || 'Error'}</div>}
+
         <input type="submit" name="submit" id="submit" value="Create" />
       </form>
       <p>
         Already have an account? <Link to="/sign-in">Sign In</Link>
       </p>
-      {errorState && <div className={classes.error}>{errorState}</div>}
     </div>
   )
 }

@@ -5,13 +5,16 @@ import { useHistory } from 'react-router-dom'
 import { message } from 'antd'
 
 import { updateUser } from '../../services/userApi'
+import { setUser, setErrorState } from '../../store/actions/loginAction'
 import classes from '../App/app.module.scss'
+import { error, userData } from '../../store/selectors'
 
 function UserProfile() {
   const dispatch = useDispatch()
   const history = useHistory()
-  const errorState = useSelector((state) => state.errorState)
-  const user = useSelector((state) => state.user)
+
+  const errorState = useSelector(error)
+  const user = useSelector(userData)
 
   const [fields, setFields] = useState({
     username: user.username,
@@ -36,12 +39,18 @@ function UserProfile() {
   const onSubmit = (data) => {
     const filteredKeys = Object.keys(data).filter((key) => data[key] !== '')
     const newData = filteredKeys.reduce((acc, key) => ({ ...acc, [key]: data[key] }), {})
-    dispatch(updateUser(newData))
-
-    if (errorState === '') {
-      message.success('Profile update')
-      history.push('/')
-    }
+    updateUser(newData).then((body) => {
+      if (body.user) {
+        dispatch(setUser(body.user))
+        dispatch(setErrorState(''))
+        message.success('Profile update')
+        history.push('/')
+      }
+      if (body.errors) {
+        const value = Object.entries(body.errors).map(([key, value]) => `${key} ${value}`)
+        dispatch(setErrorState(value))
+      }
+    })
   }
 
   return (
@@ -69,6 +78,7 @@ function UserProfile() {
           })}
         />
         {errors?.username && <div className={classes.error}>{errors?.username.message || 'Error'}</div>}
+        {errorState ? <div className={classes.error}>Username is already taken</div> : null}
 
         <label htmlFor="email">Email address</label>
         <input
@@ -87,6 +97,7 @@ function UserProfile() {
           })}
         />
         {errors?.email && <div className={classes.error}>{errors?.email?.message || 'Error'}</div>}
+        {errorState ? <div className={classes.error}>Email is already taken</div> : null}
 
         <label htmlFor="password">New password</label>
         <input
@@ -114,7 +125,6 @@ function UserProfile() {
 
         <input type="submit" name="submit" id="submit" value="Save" />
       </form>
-      {errorState && <div className={classes.error}>{errorState}</div>}
     </div>
   )
 }

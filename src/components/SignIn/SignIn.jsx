@@ -1,26 +1,34 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { useEffect } from 'react'
+import { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useForm } from 'react-hook-form'
 
 import { signIn } from '../../services/userApi'
+import { setLogged, setUser, setErrorState } from '../../store/actions/loginAction'
 import classes from '../App/app.module.scss'
 
 function SignIn() {
   const history = useHistory()
   const dispatch = useDispatch()
-  const errorState = useSelector((state) => state.errorState)
-  const logged = useSelector((state) => state.logged)
+  const [validationErr, setValidationErr] = useState(false)
+
   const { register, handleSubmit } = useForm({ mode: 'onBlur' })
 
   const onSubmit = (data) => {
-    dispatch(signIn(data.email, data.password))
+    signIn(data.email, data.password).then((body) => {
+      if (body.user) {
+        localStorage.setItem('token', body.user.token)
+        dispatch(setLogged(true))
+        dispatch(setUser(body.user))
+        dispatch(setErrorState(''))
+        history.push('/')
+      }
+      if (body.errors) {
+        setValidationErr(true)
+      }
+    })
   }
-
-  useEffect(() => {
-    logged ? history.push('/') : null
-  }, [logged])
 
   return (
     <div className={classes.block__form}>
@@ -51,12 +59,13 @@ function SignIn() {
             required: 'Password is required',
           })}
         />
+        {validationErr ? <div className={classes.error}>Login or password is invalid</div> : null}
+
         <input type="submit" name="submit" id="submit" value="Login" />
       </form>
       <p>
         Don`t have an account? <Link to="/sign-up">Sign Up</Link>
       </p>
-      {errorState && <div className={classes.error}>{errorState}</div>}
     </div>
   )
 }
